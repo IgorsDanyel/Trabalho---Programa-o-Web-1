@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="header-container">
+        <header class="header">
+            <h1>Trabalho de Programação</h1>
+            <ul class="nav">
+                <li class="search-input-container">
+                    <input style="text-decoration: none;" placeholder="Digite o id do usuário entre 1 e 200" type="text" name="" id="pesquisa">
+                    <button class="btn-search"> <ion-icon class="search-icon" name="search-outline"></ion-icon></button>
+                </li>
+            </ul>
+        </header>
+    </div>
+    <main class="main">
+        <h1>Lista de tarefas</h1>
+        <form class="form">
+            <label for="add-todo">Escreva uma tarefa</label>
+            <div class="input-div">
+                <div class="inputs">
+                    <input type="text" name="add" id="add-todo" class="input_title" placeholder="Escreva um título">
+                    <input type="text" name="add" id="add-todo" class="input_desc" placeholder="Escreva uma descrição (opcional)">
+                </div>
+                <button class="btn-add"><ion-icon name="add-outline" class="ic-btn-add"></ion-icon><div class="loading-btn"></div></button>
+            </div>
+            <p class="error-inputs">Preencha os dois campos para adicionar uma nova tarefa</p>
+        </form>
+
+        <section class="list-todo">
+            <div class="loading"></div>
+            <p class="no-todos">Sem tarefas</p>
+            <div class="todo ex">
+                <div class="loading-update-todo"></div>
+                <ion-icon name="checkmark-outline" class="btn_complet"></ion-icon>
+                <p>1 - Fazer sexo</p>
+                <ion-icon class="btn_delete" name="trash-outline"></ion-icon>
+            </div>
+        </section>
+
+        <dialog class="modal-new">
+            <div class="modal-content">
+                <ion-icon name="close-outline" class="btn-close"></ion-icon>
+                <h2>Resultado da pesquisa</h2>
+                <section class="list-result">
+                    <div class="loading loading-result"></div>
+                    <div class="todo ex">
+                        <ion-icon name="checkmark-outline" class="btn_complet"></ion-icon>
+                        <p>1 - Fazer sexo</p>
+                        <ion-icon class="btn_delete" name="trash-outline"></ion-icon>
+                    </div>
+                </section>
+            </div>
+        </dialog>
+    </main>
+
+    <script src="script.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>
+

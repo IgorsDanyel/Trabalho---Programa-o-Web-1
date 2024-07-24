@@ -1,0 +1,208 @@
+/* styles.css */
+
+/* Estilo para o body e fonte padrão */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    margin: 0;
+    padding: 0;
+}
+
+.header-container {
+    background-color: #34495e;
+    padding: 10px 0;
+}
+
+.header {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.nav {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.nav li {
+    margin-left: 20px;
+}
+
+.search-input-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-input-container input {
+    padding: 5px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.btn-search {
+    background: #1abc9c;
+    border: none;
+    padding: 5px 10px;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.btn-search:hover {
+    background: #16a085;
+}
+
+/* Estilo para o main e formulário */
+.main {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #34495e;
+    border-radius: 8px;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+.form {
+    margin-bottom: 20px;
+}
+
+.input-div {
+    display: flex;
+    flex-direction: column;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+}
+
+.inputs input {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.btn-add {
+    background-color: #1abc9c;
+    border: none;
+    padding: 10px 20px;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.ic-btn-add {
+    margin-right: 10px;
+}
+
+.loading-btn {
+    display: none;
+}
+
+.error-inputs {
+    color: #e74c3c;
+    display: none;
+    margin-top: 10px;
+}
+
+.no-todos {
+    display: none;
+    font-style: italic;
+}
+
+/* Estilo para a lista de tarefas */
+.list-todo {
+    margin: 20px 0;
+    padding: 10px;
+}
+
+.todo {
+    background-color: #16a085;
+    color: #fff;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.todo p {
+    margin: 0;
+    flex: 1;
+}
+
+.btn_complet,
+.btn_delete {
+    cursor: pointer;
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+.btn_complet {
+    color: #fff;
+}
+
+.btn_delete {
+    color: #e74c3c;
+}
+
+.btn_complet:hover,
+.btn_delete:hover {
+    opacity: 0.8;
+}
+
+.completed-todo {
+    background-color: #2ecc71;
+    text-decoration: line-through;
+}
+
+/* Estilo para o modal */
+.dialog {
+    background-color: #2c3e50;
+    border: none;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.modal-content {
+    padding: 20px;
+}
+
+.btn-close {
+    cursor: pointer;
+    font-size: 24px;
+    color: #e74c3c;
+}
+
+.btn-close:hover {
+    opacity: 0.8;
+}
+
+
+
+
+
+
+
