@@ -152,7 +152,8 @@ h1 {
 }
 
 .btn_complet,
-.btn_delete {
+.btn_delete,
+.btn_edit {
     cursor: pointer;
     font-size: 20px;
     margin-left: 10px;
@@ -166,8 +167,13 @@ h1 {
     color: #e74c3c;
 }
 
+.btn_edit {
+    color: #f1c40f;
+}
+
 .btn_complet:hover,
-.btn_delete:hover {
+.btn_delete:hover,
+.btn_edit:hover {
     opacity: 0.8;
 }
 
@@ -199,10 +205,3 @@ h1 {
 .btn-close:hover {
     opacity: 0.8;
 }
-
-
-
-
-
-
-
