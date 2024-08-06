@@ -48,185 +48,153 @@
                 },
                 body: JSON.stringify({
                     userId: 1, // Ajuste o userId conforme necessário
-                    id: new Date().getTime(), // ID temporário
+                    id: new Date().getTime(), // ID único para a nova tarefa
                     title: mInputTitle,
-                    completed: false
+                    completed: false,
+                    description: mInputDesc 
                 })
             });
 
-            if (!request.ok) {
-                throw new Error("Erro ao adicionar tarefa");
-            }
+            const todo = await request.json();
+            list.prepend(createNewItem(todo));
+            inputTitle.value = '';
+            inputDesc.value = '';
 
-            const data = await request.json();
-            const newItem = listItem.cloneNode(true);
-            newItem.querySelector('p').innerText = `Usuário: ${data.userId} - ${data.title} \n Descrição: ${mInputDesc}`;
-            newItem.querySelector('.btn_delete').onclick = (e) => {
-                e.preventDefault();
-                deleteTodo(data.id);
-                newItem.remove();
-                if (Array.from(list.querySelectorAll('.todo')).length === 1) {
-                    list.querySelector('.no-todos').style.display = "block";
-                }
-            }
-            newItem.querySelector('.btn_complet').onclick = (e) => {
-                e.preventDefault();
-                updateTodo(data.id, { completed: !data.completed });
-                data.completed = !data.completed;
-                newItem.classList.toggle("completed-todo");
-            }
-
-            newItem.classList.remove('ex');
-            list.insertBefore(newItem, list.firstChild);
             icBtnAdd.style.visibility = 'visible';
             loadingBtnAdd.style.display = 'none';
 
         } catch (error) {
-            console.error('Erro ao adicionar tarefa:', error);
+            console.error('Erro:', error);
         }
     }
 
     async function getAllToDos() {
         try {
-            const request = await fetch('https://jsonplaceholder.typicode.com/todos');
-            if (!request.ok) {
-                throw new Error("Erro ao buscar tarefas");
-            }
-            const data = await request.json();
-            list.innerHTML = ''; // Limpa a lista antes de adicionar novos itens
-
-            data.forEach(mItem => {
-                const newItem = listItem.cloneNode(true);
-                newItem.querySelector('p').innerText = `Usuário: ${mItem.userId} - ${mItem.title} \n Descrição: Nenhuma`;
-                newItem.querySelector('.btn_delete').onclick = (e) => {
-                    e.preventDefault();
-                    deleteTodo(mItem.id);
-                    newItem.remove();
-                    if (Array.from(list.querySelectorAll('.todo')).length === 1) {
-                        list.querySelector('.no-todos').style.display = "block";
-                    }
-                }
-                newItem.querySelector('.btn_complet').onclick = (e) => {
-                    e.preventDefault();
-                    updateTodo(mItem.id, { completed: !mItem.completed });
-                    mItem.completed = !mItem.completed;
-                    newItem.classList.toggle("completed-todo");
-                }
-
-                newItem.classList.remove('ex');
-                list.appendChild(newItem);
-            });
-
-            if (Array.from(list.querySelectorAll('.todo')).length === 0) {
-                list.querySelector('.no-todos').style.display = "block";
+            loading.style.display = "block";
+            const request = await fetch("https://jsonplaceholder.typicode.com/todos");
+            const todos = await request.json();
+            list.innerHTML = '';
+            if (todos.length > 0) {
+                todos.forEach(todo => list.prepend(createNewItem(todo)));
+            } else {
+                document.querySelector('.no-todos').style.display = "block";
             }
             loading.style.display = "none";
         } catch (error) {
-            console.error('Erro no fetch:', error);
+            console.error('Erro:', error);
         }
     }
 
-    function configModal() {
-        btnSearch.onclick = (e) => {
-            const id = Number(inputSearch.value.trim());
-            if (isNaN(id) || id <= 0 || id > 200) {
-                document.querySelector('.search-input-container').classList.add('search-input-container-error');
-                return;
-            }
-            getAllToDosOfUser(id);
-            modal.showModal();
+    function createNewItem(todo) {
+        const item = listItem.cloneNode(true);
+        const text = item.querySelector('p');
+        const completed = item.querySelector('.btn_complet');
+        const del = item.querySelector('.btn_delete');
+        const edit = item.querySelector('.btn_edit');
+        const loadingUpdate = item.querySelector(".loading-update-todo");
+
+        item.id = `item-${todo.id}`;
+        text.textContent = `${todo.id} - ${todo.title}`;
+
+        if (todo.completed) {
+            item.classList.add("completed-todo");
+        } else {
+            item.classList.remove("completed-todo");
         }
 
-        btnClose.onclick = () => {
-            modal.close();
-        }
+        completed.onclick = () => updateToDoStatus(todo.id, item, loadingUpdate);
+        del.onclick = () => deleteToDo(todo.id);
+        edit.onclick = () => editToDo(item, text, todo.id);
 
-        window.onclick = (event) => {
-            if (event.target === modal) {
-                modal.close();
-            }
-        }
+        return item;
     }
 
-    async function updateTodo(id, body) {
+    async function updateToDoStatus(todoId, item, loading) {
         try {
-            loadingTodo.style.display = "block";
-            const request = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+            loading.style.display = "block";
+            const request = await fetch(`https://jsonplaceholder.typicode.com/todos/${todoId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(body)
+                body: JSON.stringify({
+                    completed: !item.classList.contains("completed-todo")
+                })
             });
 
-            if (!request.ok) {
-                throw new Error("Erro ao atualizar tarefa");
-            }
-            await request.json();
-            loadingTodo.style.display = "none";
-        } catch (e) {
-            console.error('Erro ao atualizar tarefa:', e);
-        }
-    }
-
-    async function getAllToDosOfUser(userId) {
-        try {
-            const listResult = document.querySelector('.list-result');
-            const loadingResult = document.querySelector('.loading-result');
-            loadingResult.style.display = "block";
-
-            const request = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}/todos`);
-            if (!request.ok) {
-                throw new Error("Erro ao buscar tarefas do usuário");
-            }
-            const data = await request.json();
-            listResult.innerHTML = '';
-
-            data.forEach(mItem => {
-                const newItem = listItem.cloneNode(true);
-                newItem.querySelector('p').innerText = `Usuário: ${mItem.userId} - ${mItem.title} \n Descrição: Nenhuma`;
-                newItem.querySelector('.btn_delete').onclick = (e) => {
-                    e.preventDefault();
-                    deleteTodo(mItem.id);
-                    newItem.remove();
-                    if (Array.from(listResult.querySelectorAll('.todo')).length === 1) {
-                        listResult.querySelector('.no-todos').style.display = "block";
-                    }
-                }
-                newItem.querySelector('.btn_complet').onclick = (e) => {
-                    e.preventDefault();
-                    updateTodo(mItem.id, { completed: !mItem.completed });
-                    mItem.completed = !mItem.completed;
-                    newItem.classList.toggle("completed-todo");
-                }
-
-                newItem.classList.remove('ex');
-                listResult.appendChild(newItem);
-            });
-
-            if (Array.from(listResult.querySelectorAll('.todo')).length === 0) {
-                listResult.querySelector('.no-todos').style.display = "block";
-            }
-            loadingResult.style.display = "none";
+            const todo = await request.json();
+            item.classList.toggle("completed-todo", todo.completed);
+            loading.style.display = "none";
         } catch (error) {
-            console.error('Erro ao buscar tarefas do usuário:', error);
+            console.error('Erro:', error);
         }
     }
 
-    async function deleteTodo(id) {
+    async function deleteToDo(todoId) {
         try {
-            const request = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
-                method: "DELETE",
+            const userConfirmed = confirm("Are you sure you want to delete this task?");
+            if (!userConfirmed) {
+                return;
+            }
+            const request = await fetch(`https://jsonplaceholder.typicode.com/todos/${todoId}`, {
+                method: "DELETE"
             });
 
-            if (!request.ok) {
-                throw new Error("Erro ao deletar tarefa");
+            if (request.ok) {
+                document.getElementById(`item-${todoId}`).remove();
             }
-            await request.json();
-        } catch (e) {
-            console.error('Erro ao deletar tarefa:', e);
+        } catch (error) {
+            console.error('Erro:', error);
         }
+    }
+
+    async function editToDo(item, text, todoId) {
+        const newTitle = prompt("Enter new title", text.textContent.split(' - ')[1]);
+        if (newTitle) {
+            try {
+                const request = await fetch(`https://jsonplaceholder.typicode.com/todos/${todoId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        title: newTitle
+                    })
+                });
+
+                const todo = await request.json();
+                text.textContent = `${todo.id} - ${todo.title}`;
+            } catch (error) {
+                console.error('Erro:', error);
+            }
+        }
+    }
+
+    function configModal() {
+        btnSearch.onclick = async (e) => {
+            e.preventDefault();
+            const inputValue = inputSearch.value.trim();
+            if (!inputValue) return;
+
+            try {
+                const request = await fetch(`https://jsonplaceholder.typicode.com/todos?userId=${inputValue}`);
+                const todos = await request.json();
+
+                const list = modal.querySelector(".list-result");
+                list.innerHTML = '';
+
+                if (todos.length > 0) {
+                    todos.forEach(todo => list.prepend(createNewItem(todo)));
+                } else {
+                    list.innerHTML = '<p>No tasks found for this user</p>';
+                }
+
+                modal.showModal();
+            } catch (error) {
+                console.error('Erro:', error);
+            }
+        }
+
+        btnClose.onclick = () => modal.close();
     }
 })();
-
-
